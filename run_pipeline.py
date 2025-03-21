@@ -26,7 +26,7 @@ if __name__ == '__main__':
     load_data(trans_df)
 
     # Save Transformed Dataset into Parquet format.
-    trans_df.to_parquet('data/processed_data.parquet')
+    # trans_df.to_parquet('data/processed_data.parquet')
 
     end = time.time()
 
