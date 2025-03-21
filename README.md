@@ -30,10 +30,6 @@ This is my table schema
 │   ├── db_loader.py         # Load processed data into a database
 │── scripts/
 │   ├── __init__.py     # Package initialization
-│── utils/
-│   ├── __init__.py     # Package initialization
-│   ├── config.py      # load env variable to python
-│   ├── utils.py      # general utility functions
 │── tests/
 │   ├── __init__.py     # Package initialization
 │   ├── test_web_scraper.py # Unit tests for extraction
@@ -82,7 +78,6 @@ pytest
 - `requests` (>=2.32.3,<3.0.0)
 - `sqlalchemy` (>=2.0.39,<3.0.0)
 - `psycopg2` (>=2.9.10,<3.0.0)
-- `pytest` (>=8.3.5,<9.0.0)
 
 [tool.poetry.group.dev.dependencies]
 - `black` = "^25.1.0"
