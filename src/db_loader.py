@@ -33,12 +33,12 @@ def connect_db():
         Session = sessionmaker(bind=engine)
         Base.metadata.create_all(engine)
         # session = Session()
-        logging.info('\n\nCongratulations!!! Database successfully connected to.\n\n')
+        logging.info('\nDatabase successfully connected to.\n')
         return Session, engine
     except SQLAlchemyError as e:
-        logging.error(f'Connection Error {e}')
+        logging.error('Connection Error: %s', e)
         return None, None
-    
+
 
 class Movies(Base):
     """
@@ -49,8 +49,8 @@ class Movies(Base):
     __tablename__ = 'movies'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(200),unique=True)
-    description = Column(String, )
+    title = Column(String(200), unique=True)
+    description = Column(String)
     release_year = Column(String(4))
     movie_type = Column(String(40))
     movies_id = relationship('Details', backref='movies')
@@ -122,4 +122,3 @@ def load_data(data: pd.DataFrame) -> pd.DataFrame:
 
 # if __name__ == '__main__':
 #     load_data()
-

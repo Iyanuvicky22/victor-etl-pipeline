@@ -58,13 +58,14 @@ API_HOST_IMDB_2 = os.getenv("API_HOST_IMDB_2")
 
 def imdb_scraper(url: str) -> list:
     """
-    Getting top 250 movies
+    Getting series of movies and shows.
     Args:
         url (str): website to be scraped.
         api_key (str): IMDb Api key.
     """
     try:
-        headers = {"x-rapidapi-key": APIKEY, "x-rapidapi-host": API_HOST_IMDB_1}
+        headers = {"x-rapidapi-key": APIKEY,
+                   "x-rapidapi-host": API_HOST_IMDB_1}
 
         response = requests.get(url, headers=headers, timeout=60)
         res_json = response.json()
@@ -79,10 +80,10 @@ def imdb_scraper(url: str) -> list:
         return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
-        'Copy and paste from the API.')
+                      'Copy and paste from the API.')
         return None
     except requests.exceptions.RequestException as e:
-        logging.error(f'Exception Raised {e}')
+        logging.error('Exception Raised: %s', e)
         return None
 
 
@@ -97,7 +98,8 @@ def top_1000_movies(url: str, page: int) -> list:
     """
     try:
         url = URL_1000 + str(page)
-        headers = {"x-rapidapi-key": APIKEY, "x-rapidapi-host": API_HOST_IMDB_2}
+        headers = {"x-rapidapi-key": APIKEY,
+                   "x-rapidapi-host": API_HOST_IMDB_2}
 
         response = requests.get(url, headers=headers, timeout=40)
         res = response.json()
@@ -112,10 +114,10 @@ def top_1000_movies(url: str, page: int) -> list:
         return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
-        ' Copy and paste from the API.')
+                      'Copy and paste from the API.')
         return None
     except requests.exceptions.RequestException as e:
-        logging.error(f'Exception Raised {e}')
+        logging.error('Exception Raised: %s', e)
         return None
 
 
@@ -148,10 +150,10 @@ def get_1000_movies(pages: int = 10) -> pd.DataFrame:
         return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
-        'Copy and paste from the API.')
+                      'Copy and paste from the API.')
         return None
     except requests.exceptions.RequestException as e:
-        logging.error(f'Exception Raised {e}')
+        logging.error('Exception Raised: %s', e)
         return None
 
 
@@ -183,8 +185,8 @@ def get_imdb_movies(urls: list) -> pd.DataFrame:
         return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
-        'Copy and paste from the API.')
+                      'Copy and paste from the API.')
         return None
     except requests.exceptions.RequestException as e:
-        logging.error('Exception Raised', e)
+        logging.error('Exception Raised: %s', e)
         return None

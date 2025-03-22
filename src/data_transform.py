@@ -6,8 +6,6 @@ Author: Arowosegbe Victor Iyanuoluwa\n
 Email: Iyanuvicky@gmail.com\n
 Github: https://github.com/Iyanuvicky22
 """
-
-import time
 import pandas as pd
 from web_scraper import *
 
@@ -104,7 +102,8 @@ def clean_df_2(data: pd.DataFrame) -> pd.DataFrame:
         lambda x: ", ".join(x) if isinstance(x, list) else str(x)
     )
     # Dropping Duplicates
-    df_2_dup_dropped = df_2_new.drop_duplicates().reset_index().drop("index", axis=1)
+    df_2_dup_dropped = df_2_new.drop_duplicates(
+        ).reset_index().drop("index", axis=1)
     # Creating a new column
     df_2_dup_dropped.loc[:, "director"] = None
 
@@ -147,7 +146,9 @@ def transform_df(data: pd.DataFrame) -> pd.DataFrame:
     joined_df["total_sales"] = (
         joined_df["total_sales"].astype(str).replace(r"\,", "", regex=True)
     )
-    joined_df["total_sales"] = pd.to_numeric(joined_df["total_sales"], errors="coerce")
+    joined_df["total_sales"] = pd.to_numeric(
+        joined_df["total_sales"], errors="coerce"
+    )
     joined_df.loc[joined_df["release_year"] == "PG", "release_year"] = (
         "1995"  # Changing wrong release year to the right one.
     )
@@ -159,5 +160,7 @@ def transform_df(data: pd.DataFrame) -> pd.DataFrame:
         subset=["votes_count", "rating", "description"]
     )  # Dropping unwanted missing values.
     joined_df = joined_df.drop(columns=["budget"])  # Dropping budget column
+
+    joined_df.to_parquet('data/processed_data.parquet')
 
     return joined_df
