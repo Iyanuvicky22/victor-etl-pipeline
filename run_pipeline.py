@@ -11,7 +11,11 @@ from src.data_transform import *
 from src.db_loader import *
 
 
-if __name__ == '__main__':
+def etl_pipeline():
+    """
+    IMDb ETL for movies scraped from two APIs, trandformed
+
+    """
     start = time.time()
 
     # Scrape Dataset
@@ -22,13 +26,16 @@ if __name__ == '__main__':
     df_joined = join_dfs(df_1000=df_1, df_imdb=df_2)
     trans_df = transform_df(data=df_joined)
 
+    # trans_df.to_csv('31-03-25 Call.csv')
+
     # Load Dataset
     load_data(trans_df)
-
-    # Save Transformed Dataset into Parquet format.
-    # trans_df.to_parquet('data/processed_data.parquet')
 
     end = time.time()
 
     time_taken = end - start
     print(f'\n\nTotal time taken for ETL:-> {round(time_taken, 2)} seconds.\n')
+
+
+if __name__ == '__main__':
+    etl_pipeline()

@@ -69,22 +69,16 @@ def imdb_scraper(url: str) -> list:
 
         response = requests.get(url, headers=headers, timeout=60)
         res_json = response.json()
-
-        # res_df = pd.DataFrame(res_json)
         return res_json
     except requests.exceptions.ConnectionError:
         logging.error("Connection Error")
-        return None
     except requests.exceptions.HTTPError:
         logging.error('HTTPs Error')
-        return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
                       'Copy and paste from the API.')
-        return None
     except requests.exceptions.RequestException as e:
         logging.error('Exception Raised: %s', e)
-        return None
 
 
 def top_1000_movies(url: str, page: int) -> list:
@@ -108,17 +102,13 @@ def top_1000_movies(url: str, page: int) -> list:
         return result
     except requests.exceptions.ConnectionError:
         logging.error("Connection Error")
-        return None
     except requests.exceptions.HTTPError:
         logging.error('HTTPs Error')
-        return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
                       'Copy and paste from the API.')
-        return None
     except requests.exceptions.RequestException as e:
         logging.error('Exception Raised: %s', e)
-        return None
 
 
 def get_1000_movies(pages: int = 10) -> pd.DataFrame:
@@ -144,17 +134,13 @@ def get_1000_movies(pages: int = 10) -> pd.DataFrame:
         return movies_df
     except requests.exceptions.ConnectionError:
         logging.error("Connection Error")
-        return None
     except requests.exceptions.HTTPError:
         logging.error('HTTPs Error')
-        return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
                       'Copy and paste from the API.')
-        return None
     except requests.exceptions.RequestException as e:
         logging.error('Exception Raised: %s', e)
-        return None
 
 
 def get_imdb_movies(urls: list) -> pd.DataFrame:
@@ -179,14 +165,10 @@ def get_imdb_movies(urls: list) -> pd.DataFrame:
         return df_2
     except requests.exceptions.ConnectionError:
         logging.error("Connection Error")
-        return None
     except requests.exceptions.HTTPError:
         logging.error('HTTPs Error')
-        return None
     except requests.exceptions.InvalidURL:
         logging.error('URL Error. Check the URL again for correctness.'
                       'Copy and paste from the API.')
-        return None
     except requests.exceptions.RequestException as e:
         logging.error('Exception Raised: %s', e)
-        return None

@@ -22,7 +22,6 @@ def clean_df_1(data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Cleaned Dataframe
     """
-    # Dropping unwanted columns
     drop_cols = [
         "rank",
         "Poster_Link",
@@ -34,7 +33,6 @@ def clean_df_1(data: pd.DataFrame) -> pd.DataFrame:
         "Meta_score",
     ]
     df_1_cols_dropped = data.drop(drop_cols, axis=1)
-    # Renaming columns
     df_1_new = df_1_cols_dropped.rename(
         {
             "Series_Title": "title",
@@ -49,8 +47,7 @@ def clean_df_1(data: pd.DataFrame) -> pd.DataFrame:
         },
         axis=1,
     )
-    # Creating a new column
-    df_1_new.loc[:, "type"] = "movie"
+    df_1_new["type"] = "movie"
 
     return df_1_new
 
@@ -62,7 +59,6 @@ def clean_df_2(data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Cleaned Dataframe
     """
-    # Dropping unwanted columns
     cols_drop = [
         "url",
         "primaryTitle",
@@ -85,7 +81,6 @@ def clean_df_2(data: pd.DataFrame) -> pd.DataFrame:
         "isAdult",
     ]
     df_2_cols_dropped = data.drop(cols_drop, axis=1)
-    # Renaming choosen columns.
     df_2_new = df_2_cols_dropped.rename(
         {
             "originalTitle": "title",
@@ -97,15 +92,12 @@ def clean_df_2(data: pd.DataFrame) -> pd.DataFrame:
         },
         axis=1,
     )
-    # Converting list rows in genre column to string
     df_2_new["genres"] = df_2_new["genres"].apply(
         lambda x: ", ".join(x) if isinstance(x, list) else str(x)
     )
-    # Dropping Duplicates
     df_2_dup_dropped = df_2_new.drop_duplicates(
         ).reset_index().drop("index", axis=1)
-    # Creating a new column
-    df_2_dup_dropped.loc[:, "director"] = None
+    df_2_dup_dropped["director"] = None
 
     return df_2_dup_dropped
 
@@ -117,11 +109,9 @@ def join_dfs(df_1000: pd.DataFrame, df_imdb: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Joined dataframe
     """
-    # Loading the datasets
     data_1 = clean_df_1(data=df_1000)
     data_2 = clean_df_2(data=df_imdb)
 
-    # Joining the datasets
     frames = [data_1, data_2]
     new_df = pd.concat(frames, ignore_index=True)
 
@@ -134,15 +124,16 @@ def transform_df(data: pd.DataFrame) -> pd.DataFrame:
     Returns:
         pd.DataFrame: Transformed Dataframe
     """
-
     joined_df = data
-    # Changing Object Types
+    joined_df = joined_df.dropna(
+        subset=["votes_count", "rating", "description", "release_year"]
+    )
     joined_df["runtime"] = (
         joined_df["runtime"].astype(str).str.extract(r"(\d+)")
-    )  # Extract only integer value
+    )
     joined_df["runtime"] = pd.to_numeric(
         joined_df["runtime"], errors="coerce"
-    )  # Change column to numeric
+    )
     joined_df["total_sales"] = (
         joined_df["total_sales"].astype(str).replace(r"\,", "", regex=True)
     )
@@ -150,16 +141,18 @@ def transform_df(data: pd.DataFrame) -> pd.DataFrame:
         joined_df["total_sales"], errors="coerce"
     )
     joined_df.loc[joined_df["release_year"] == "PG", "release_year"] = (
-        "1995"  # Changing wrong release year to the right one.
+        "1995"
     )
-    joined_df["release_year"] = pd.to_datetime(
-        joined_df["release_year"], format="%Y"
-    ).dt.year  # Changing column to date type.
-    # Treating NAs and Dropping Unwanted Columns
-    joined_df = joined_df.dropna(
-        subset=["votes_count", "rating", "description"]
-    )  # Dropping unwanted missing values.
-    joined_df = joined_df.drop(columns=["budget"])  # Dropping budget column
+    joined_df["release_year"] = joined_df["release_year"].astype(int).astype(str)
+
+    joined_df['rating'] = joined_df[
+        'rating'].astype(float)
+    joined_df['votes_count'] = joined_df[
+        'votes_count'].astype(float)
+    cols_to_drop = ["budget, metascore"]
+    for col in cols_to_drop:
+        if col in joined_df.columns.to_list():
+            joined_df = joined_df.drop(columns=col)
 
     joined_df.to_parquet('data/processed_data.parquet')
 

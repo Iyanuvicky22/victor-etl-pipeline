@@ -12,16 +12,16 @@ import pandas as pd
 from dotenv import load_dotenv
 from sqlalchemy import Column, create_engine, ForeignKey
 from sqlalchemy import Integer, String, DECIMAL
-from sqlalchemy.orm import sessionmaker, declarative_base
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import sessionmaker, DeclarativeBase, Mapped
+from sqlalchemy.orm import relationship, mapped_column
 from sqlalchemy.exc import SQLAlchemyError
-from data_transform import transform_df
 
 load_dotenv(dotenv_path='.env')
 
 DB_URL = os.getenv('DB_URL')
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 def connect_db():
@@ -48,12 +48,13 @@ class Movies(Base):
     """
     __tablename__ = 'movies'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    title = Column(String(200), unique=True)
-    description = Column(String)
-    release_year = Column(String(4))
-    movie_type = Column(String(40))
-    movies_id = relationship('Details', backref='movies')
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    title: Mapped[str] = mapped_column(String(200), unique=True)
+    description: Mapped[str]
+    release_year: Mapped[str] = mapped_column(String(4))
+    movie_type: Mapped[str] = mapped_column(String(40))
+
+    movies_id: Mapped['Details'] = relationship(back_populates='detail')
 
 
 class Details(Base):
@@ -63,12 +64,15 @@ class Details(Base):
         Base (Class): Table declarative class
     """
     __tablename__ = 'details'
-    id = Column(Integer, primary_key=True)
-    details_id = Column(Integer, ForeignKey('movies.id'))
-    director = Column(String(100))
-    duration = Column(DECIMAL(5, 2))
-    ratings = Column(DECIMAL(2, 1))
-    votes = Column(Integer)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    details_id: Mapped[int] = mapped_column(ForeignKey('movies.id'))
+    director: Mapped[str] = mapped_column(String(100))
+    duration: Mapped[float] = mapped_column(DECIMAL(5, 2))
+    ratings: Mapped[float] = mapped_column(DECIMAL(2, 1))
+    votes: Mapped[int]
+
+    detail: Mapped['Movies'] = relationship(back_populates='movies_id')
 
 
 class Sales(Base):
@@ -78,8 +82,8 @@ class Sales(Base):
         Base (Class): Table declarative class
     """
     __tablename__ = 'gross_sales'
-    id = Column(Integer, primary_key=True)
-    sales = Column(DECIMAL(20, 2))
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sales: Mapped[float] = mapped_column(DECIMAL(20, 2))
 
 
 def load_data(data: pd.DataFrame) -> pd.DataFrame:
@@ -88,7 +92,6 @@ def load_data(data: pd.DataFrame) -> pd.DataFrame:
 
     """
     Session, engine = connect_db()
-    # data = transform_df()
 
     with Session.begin() as session:
         for _, row in data.iterrows():
@@ -118,7 +121,3 @@ def load_data(data: pd.DataFrame) -> pd.DataFrame:
             )
             session.add(sales)
         session.commit()
-
-
-# if __name__ == '__main__':
-#     load_data()
