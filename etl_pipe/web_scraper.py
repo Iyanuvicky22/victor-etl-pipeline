@@ -5,16 +5,22 @@ Author: Arowosegbe Victor Iyanuoluwa\n
 Email: Iyanuvicky@gmail.com\n
 Github: https://github.com/Iyanuvicky22
 """
+import sys
+sys.path.append("../")
 
 import os
-import logging
 import requests
 from dotenv import load_dotenv
 import pandas as pd
+from logger.logger import etl_logger
+from datetime import datetime
 
+
+logger = etl_logger()
 pd.set_option("display.max_columns", None)
+load_dotenv()
 
-load_dotenv(dotenv_path=".env")
+CURRENT_TIME = datetime.now().strftime('%d-%m-%Y')
 
 # API-KEY
 APIKEY = os.getenv("APIKEY")
@@ -71,14 +77,16 @@ def imdb_scraper(url: str) -> list:
         res_json = response.json()
         return res_json
     except requests.exceptions.ConnectionError:
-        logging.error("Connection Error")
+        logger.error("Connection Error")
     except requests.exceptions.HTTPError:
-        logging.error('HTTPs Error')
+        logger.error("HTTPs Error")
     except requests.exceptions.InvalidURL:
-        logging.error('URL Error. Check the URL again for correctness.'
-                      'Copy and paste from the API.')
+        logger.error(
+            "URL Error. Check the URL again for correctness."
+            "Copy and paste from the API."
+        )
     except requests.exceptions.RequestException as e:
-        logging.error('Exception Raised: %s', e)
+        logger.error("Exception Raised: %s", e)
 
 
 def top_1000_movies(url: str, page: int) -> list:
@@ -101,14 +109,16 @@ def top_1000_movies(url: str, page: int) -> list:
         result = result[0:100]
         return result
     except requests.exceptions.ConnectionError:
-        logging.error("Connection Error")
+        logger.error("Connection Error")
     except requests.exceptions.HTTPError:
-        logging.error('HTTPs Error')
+        logger.error("HTTPs Error")
     except requests.exceptions.InvalidURL:
-        logging.error('URL Error. Check the URL again for correctness.'
-                      'Copy and paste from the API.')
+        logger.error(
+            "URL Error. Check the URL again for correctness."
+            "Copy and paste from the API."
+        )
     except requests.exceptions.RequestException as e:
-        logging.error('Exception Raised: %s', e)
+        logger.error("Exception Raised: %s", e)
 
 
 def get_1000_movies(pages: int = 10) -> pd.DataFrame:
@@ -131,16 +141,20 @@ def get_1000_movies(pages: int = 10) -> pd.DataFrame:
             movies_1000.append(res)
             flat_data = [movie for sublist in movies_1000 for movie in sublist]
             movies_df = pd.DataFrame(flat_data)
+            movies_df.to_csv(f"data/{CURRENT_TIME}_1000movies_df")
+        logger.info("Top 1000 movies successfully scraped!")
         return movies_df
     except requests.exceptions.ConnectionError:
-        logging.error("Connection Error")
+        logger.error("Connection Error")
     except requests.exceptions.HTTPError:
-        logging.error('HTTPs Error')
+        logger.error("HTTPs Error")
     except requests.exceptions.InvalidURL:
-        logging.error('URL Error. Check the URL again for correctness.'
-                      'Copy and paste from the API.')
+        logger.error(
+            "URL Error. Check the URL again for correctness."
+            "Copy and paste from the API."
+        )
     except requests.exceptions.RequestException as e:
-        logging.error('Exception Raised: %s', e)
+        logger.error("Exception Raised: %s", e)
 
 
 def get_imdb_movies(urls: list) -> pd.DataFrame:
@@ -159,16 +173,19 @@ def get_imdb_movies(urls: list) -> pd.DataFrame:
         for url in urls:
             res = imdb_scraper(url=url)
             df_list.append(res)
-
         flat_data_2 = [movie for sublist in df_list for movie in sublist]
         df_2 = pd.DataFrame(flat_data_2)
+        df_2.to_csv(f"data/{CURRENT_TIME}_imdb_movies_series_df")
+        logger.info("Movies & Series successfully scraped [Octupusteam IMDB]")
         return df_2
     except requests.exceptions.ConnectionError:
-        logging.error("Connection Error")
+        logger.error("Connection Error")
     except requests.exceptions.HTTPError:
-        logging.error('HTTPs Error')
+        logger.error("HTTPs Error")
     except requests.exceptions.InvalidURL:
-        logging.error('URL Error. Check the URL again for correctness.'
-                      'Copy and paste from the API.')
+        logger.error(
+            "URL Error. Check the URL again for correctness."
+            "Copy and paste from the API."
+        )
     except requests.exceptions.RequestException as e:
-        logging.error('Exception Raised: %s', e)
+        logger.error("Exception Raised: %s", e)

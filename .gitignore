@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.pytest_cache
+
 
 # Distribution / packaging
 dist/
@@ -17,7 +19,7 @@ ENV/
 
 # Poetry
 .poetry/
-# poetry.lock
+poetry.lock
 
 # Testing
 .coverage
@@ -28,6 +30,7 @@ htmlcov/
 # data/
 output/
 31-03-25 Call.csv
+data/
 
 # OS specific
 .DS_Store
@@ -42,7 +45,12 @@ Thumbs.db
 # Jupyter notebooks
 .ipynb_checkpoints/
 alchemy_learning.ipynb
-*.ipynb
 
 # Logs
 *.log
+
+#.coverage
+.coverage
+
+# Others
+*.txt

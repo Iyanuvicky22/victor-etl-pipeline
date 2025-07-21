@@ -1,8 +1,10 @@
 #  Arowosegbe Victor Iyanuoluwa ETL Pipeline
 
 ## Overview
-This is a data engineering task. It is basically an ETL project using IMDb APIs from Rapid API {[text](https://rapidapi.com/)} for extracting data, transforming with pandas and Loading to a database with SQLAlchemy.
-Movies data was extracted from two IMDb APIs. 
+The beginning of every data project is the data itself. As a data engineer, one of the crucial tasks that must be mastered is getting the right data in the right volume and ensuring consistent access to quality data. Data Scraping is a primary modality of sourcing for data which can be from websites, APIs and databases. This particular project  is basically an ETL (extract, transform and load) one where movies data were scraped from IMDb APIs on Rapid API website {[text](https://rapidapi.com/)}. 
+Movies data were extracted from two APIs. They were cleaned, transformed and joined using pandas library and idempotency was ensured. The transformed data was loaded into a PostgreSQL database using SQLAlchemy ORM while a copy was saved in parquet format locally.
+
+IMDb APIs Links
 1) [text](https://rapidapi.com/octopusteam-octopusteam-default/api/imdb236/playground/apiendpoint_a5de12e2-d269-44fb-8af7-6eb02982ee9e)
 2) [text](https://rapidapi.com/robotfa-robotfa-default/api/imdb-top-1000-movies-series/playground/apiendpoint_b9c2303e-934a-4b85-a8aa-3fed7cb08fe5)
 
@@ -13,13 +15,12 @@ Movies data was extracted from two IMDb APIs.
 - Database integration with `SQLAlchemy` and `psycopg2`
 - Configuration management using `.env` files
 - Unit testing with `pytest`
-   ```
 
-## ETL Process Map
-![alt text](pictures/etl-pipeline.jpg)
+
+## ETL Process Map/Architecture
+![alt text](pictures/etl_pipeline.png)
 
 ## Database Table Schema
-This is my table schema
 ![alt text](<pictures/ETL project (1).jpg>)
 
 ## Project Structure
@@ -31,7 +32,7 @@ This is my table schema
 │── poetry.lock         # Dependency lock file
 │── README.md           # Project documentation
 ├── run_pipeline.py      # run etl pipeline logic
-│── src/
+│── etl_pipe/
 │   ├── __init__.py     # Package initialization
 │   ├── web_scraper.py      # Extraction logic
 │   ├── data_transform.py    # Data transformation logic
@@ -41,14 +42,26 @@ This is my table schema
 │   ├── test_web_scraper.py # Unit tests for extraction
 │   ├── test_data_transform.py # Unit tests for transformation
 │   ├── test_db_loader.py    # Unit tests for loading
-│── data/
-│   ├── First_df.csv         # Data scraped from IMDb 1000 popular movies [text](https://rapidapi.com/robotfa-robotfa-default/api/imdb-top-1000-movies-series)
-│   ├── Second_df.csv    # Data scraped from IMDb API [text](https://rapidapi.com/octopusteam-octopusteam-default/api/imdb236)
-│   ├── Joined_data         # Joined data from the two sources.
-│   ├── processed_data.parquet      # Processed Data saved in parquet format.    
+│── notebooks/
+│   ├── scraped.ipynb    # Jupyter notebook summarizing the scraping elements.
+│   ├── joined.ipynb    #  Jupyter notebook summarizing the transformation elements. 
 ```
-## Result
 
+## Result
+### Count of Movies & Series
+![alt text](pictures/movies_data_count.png)
+
+### Movie_types and counts
+![alt text](pictures/distinct_types.png)
+
+### Highest Grossing (All Movie types)
+![alt text](pictures/highest_grossing_all,.png)
+
+### Highest Rated (All Movie types)
+![alt text](pictures/highest_rated_all.png)
+
+### Highest Rated (Movies Only!!!)
+![alt text](pictures/highest_rated_movies.png)
 
 ## Installation
 ### Prerequisites
@@ -70,6 +83,8 @@ This is my table schema
 Run the ETL pipeline with:
 ```sh
 python run_pipeline.py
+         or
+poetry run python run_pipeline.py
 ```
 
 To run tests:
@@ -91,6 +106,7 @@ pytest
 
 [tool.poetry.group.testing.dependencies]
 - `pytest` = "^8.3.5"
+- `pytest-cov` = "^6.1.0"
 
 
 ## Author
