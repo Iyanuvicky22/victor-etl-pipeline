@@ -1,9 +1,9 @@
 [project]
 name = "src"
 version = "0.1.0"
-description = ""
+description = "This is an etl project for movies using IMDb APIs from RapidAPI website hosted by Nokia. The data was extracted with requests library, cleaned and transformed with pandas and loaded into a postgreSQL database using sqlalchemyORM."
 authors = [
-    {name = "Arowosegbe Victor",email = "iyanuvicky@outlook.com"}
+    {name = "Arowosegbe Victor",email = "iyanuvicky@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.13"
@@ -30,4 +30,5 @@ dotenv = "^0.9.9"
 
 [tool.poetry.group.testing.dependencies]
 pytest = "^8.3.5"
+pytest-cov = "^6.1.0"
 

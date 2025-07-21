@@ -6,13 +6,24 @@ Email: Iyanuvicky@gmail.com\n
 Github: https://github.com/Iyanuvicky22
 """
 import time
-from src.web_scraper import *
-from src.data_transform import *
-from src.db_loader import *
+from etl_pipe.web_scraper import *
+from etl_pipe.data_transform import *
+from etl_pipe.db_loader import *
+from logger.logger import etl_logger
+
+import sys
+sys.path.append("../")
+
+logger = etl_logger()
 
 
-if __name__ == '__main__':
+def etl_pipeline():
+    """
+    IMDb ETL for movies scraped from two APIs, trandformed
+    """
+
     start = time.time()
+    logger.info("ETL Pipeline Started!")
 
     # Scrape Dataset
     df_1 = get_1000_movies(pages=10)
@@ -22,13 +33,20 @@ if __name__ == '__main__':
     df_joined = join_dfs(df_1000=df_1, df_imdb=df_2)
     trans_df = transform_df(data=df_joined)
 
+    # trans_df.to_csv('31-03-25 Call.csv')
+
     # Load Dataset
     load_data(trans_df)
-
-    # Save Transformed Dataset into Parquet format.
-    # trans_df.to_parquet('data/processed_data.parquet')
+    logger.info("ETL Pipeline Successful")
 
     end = time.time()
 
     time_taken = end - start
-    print(f'\n\nTotal time taken for ETL:-> {round(time_taken, 2)} seconds.\n')
+    logger.info(f"Time taken for ETL is {round(time_taken, 2)} secs")
+    logger.info(f"{len(trans_df)} unique movies and series loaded into database")
+
+
+if __name__ == '__main__':
+    logger.info('ETL Process Starting')
+    etl_pipeline()
+    logger.info('ETL Ended')
