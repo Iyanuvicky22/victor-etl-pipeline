@@ -1,4 +1,4 @@
-#  Arowosegbe Victor Iyanuoluwa ETL Pipeline
+#  Movies Data ETL Pipeline
 
 ## Overview
 The beginning of every data project is the data itself. As a data engineer, one of the crucial tasks that must be mastered is getting the right data in the right volume and ensuring consistent access to quality data. Data Scraping is a primary modality of sourcing for data which can be from websites, APIs and databases. This particular project  is basically an ETL (extract, transform and load) one where movies data were scraped from IMDb APIs on Rapid API website {[text](https://rapidapi.com/)}. 
